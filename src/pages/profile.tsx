@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
-import { User, Mail, Save, Loader2, Phone, Calendar, LayoutDashboard, Clock } from "lucide-react";
+import { User, Mail, Save, Loader2, Phone, Calendar, LayoutDashboard, Clock, CreditCard, QrCode, Building2, Upload, X } from "lucide-react";
 import clsx from "clsx";
 
 interface Booking {
@@ -36,6 +36,12 @@ export default function Profile() {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [activeTab, setActiveTab] = useState<'account' | 'bookings'>('account');
 
+    // Payment Modal State
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+    const [paymentMethod, setPaymentMethod] = useState<'qr' | 'bank'>('qr');
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
     useEffect(() => {
         if (!isAuthenticated) {
             router.push("/login");
@@ -65,6 +71,47 @@ export default function Profile() {
             setProfileMessage({ type: "error", text: "Failed to update profile." });
         } finally {
             setIsProfileLoading(false);
+        }
+    };
+
+    const openPaymentModal = (booking: Booking) => {
+        setSelectedBooking(booking);
+        setIsPaymentModalOpen(true);
+        setPaymentMethod('qr'); // Default to QR
+    };
+
+    const closePaymentModal = () => {
+        setIsPaymentModalOpen(false);
+        setSelectedBooking(null);
+    };
+
+    const handlePaymentSubmit = async () => {
+        if (!selectedBooking) return;
+
+        setIsProcessingPayment(true);
+        try {
+            // Simulate payment processing
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
+            // Update booking status in local state and localStorage
+            const updatedBookings = bookings.map(b =>
+                b.id === selectedBooking.id ? { ...b, status: 'Confirmed' } : b
+            );
+            setBookings(updatedBookings);
+
+            // Update localStorage (need to update all bookings, not just filtered ones)
+            const allStoredBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+            const updatedAllBookings = allStoredBookings.map((b: Booking) =>
+                b.id === selectedBooking.id ? { ...b, status: 'Confirmed' } : b
+            );
+            localStorage.setItem("bookings", JSON.stringify(updatedAllBookings));
+
+            closePaymentModal();
+            // Optional: Show success message
+        } catch (error) {
+            console.error("Payment failed", error);
+        } finally {
+            setIsProcessingPayment(false);
         }
     };
 
@@ -283,12 +330,24 @@ export default function Profile() {
                                                                     <span className="text-xs text-gray-500 uppercase tracking-wider">Total Price</span>
                                                                     <div className="text-lg font-bold text-emerald-900">฿{booking.totalPrice.toLocaleString()}</div>
                                                                 </div>
-                                                                <Link
-                                                                    href={`/villas/${booking.villaId}`}
-                                                                    className="text-emerald-600 font-medium hover:text-emerald-700 text-sm"
-                                                                >
-                                                                    View Villa
-                                                                </Link>
+
+                                                                <div className="flex items-center gap-3">
+                                                                    {booking.status === 'Pending' && (
+                                                                        <button
+                                                                            onClick={() => openPaymentModal(booking)}
+                                                                            className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                                                                        >
+                                                                            <CreditCard size={16} />
+                                                                            Pay Now
+                                                                        </button>
+                                                                    )}
+                                                                    <Link
+                                                                        href={`/villas/${booking.villaId}`}
+                                                                        className="text-emerald-600 font-medium hover:text-emerald-700 text-sm"
+                                                                    >
+                                                                        View Villa
+                                                                    </Link>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -302,6 +361,114 @@ export default function Profile() {
                     </div>
                 </div>
             </div>
+
+            {/* Payment Modal */}
+            {isPaymentModalOpen && selectedBooking && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+                        <div className="flex justify-between items-center p-4 border-b border-gray-100">
+                            <h3 className="text-lg font-serif font-bold text-gray-900">Payment</h3>
+                            <button onClick={closePaymentModal} className="text-gray-400 hover:text-gray-600">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="p-6">
+                            <div className="mb-6">
+                                <p className="text-sm text-gray-500 mb-1">Booking for</p>
+                                <h4 className="font-bold text-gray-900">{selectedBooking.villaName}</h4>
+                                <div className="flex justify-between items-center mt-2 p-3 bg-emerald-50 rounded-lg">
+                                    <span className="text-sm font-medium text-emerald-800">Total Amount</span>
+                                    <span className="text-lg font-bold text-emerald-700">฿{selectedBooking.totalPrice.toLocaleString()}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-2 mb-6 p-1 bg-gray-100 rounded-lg">
+                                <button
+                                    onClick={() => setPaymentMethod('qr')}
+                                    className={clsx(
+                                        "flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all",
+                                        paymentMethod === 'qr' ? "bg-white text-emerald-600 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                                    )}
+                                >
+                                    <QrCode size={18} />
+                                    Scan QR
+                                </button>
+                                <button
+                                    onClick={() => setPaymentMethod('bank')}
+                                    className={clsx(
+                                        "flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all",
+                                        paymentMethod === 'bank' ? "bg-white text-emerald-600 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                                    )}
+                                >
+                                    <Building2 size={18} />
+                                    Bank Transfer
+                                </button>
+                            </div>
+
+                            <div className="mb-6">
+                                {paymentMethod === 'qr' ? (
+                                    <div className="text-center">
+                                        <div className="bg-white border border-gray-200 rounded-xl p-4 inline-block mb-4">
+                                            {/* Placeholder for QR Code */}
+                                            <div className="w-48 h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+                                                <QrCode size={64} />
+                                            </div>
+                                        </div>
+                                        <p className="text-sm text-gray-600">Scan this QR code to pay via PromptPay</p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-4">
+                                        <div className="p-4 border border-gray-200 rounded-xl">
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                                                    <Building2 size={20} />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-900">Kasikorn Bank</p>
+                                                    <p className="text-xs text-gray-500">Savings Account</p>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <div className="flex justify-between text-sm">
+                                                    <span className="text-gray-500">Account No.</span>
+                                                    <span className="font-mono font-medium text-gray-900">123-4-56789-0</span>
+                                                </div>
+                                                <div className="flex justify-between text-sm">
+                                                    <span className="text-gray-500">Account Name</span>
+                                                    <span className="font-medium text-gray-900">Khao Yai Villas Co., Ltd.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="space-y-3">
+                                <button className="w-full border border-dashed border-gray-300 rounded-lg py-3 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:border-emerald-300 hover:bg-emerald-50 transition-colors flex items-center justify-center gap-2">
+                                    <Upload size={18} />
+                                    Upload Payment Slip
+                                </button>
+
+                                <button
+                                    onClick={handlePaymentSubmit}
+                                    disabled={isProcessingPayment}
+                                    className="w-full bg-emerald-600 text-white py-3 rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                                >
+                                    {isProcessingPayment ? (
+                                        <>
+                                            <Loader2 size={20} className="animate-spin" />
+                                            Processing...
+                                        </>
+                                    ) : (
+                                        "Confirm Payment"
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
