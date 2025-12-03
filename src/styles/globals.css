@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+:root {
+  /* Custom Colors */
+  --color-emerald-50: #ecfdf5;
+  --color-emerald-100: #d1fae5;
+  --color-emerald-200: #a7f3d0;
+  --color-emerald-300: #6ee7b7;
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+  --color-emerald-700: #047857;
+  --color-emerald-800: #065f46;
+  --color-emerald-900: #064e3b;
+  --color-emerald-950: #022c22;
+
+  --color-cream-50: #fdfbf7;
+  --color-cream-100: #fbf7ef;
+  --color-cream-200: #f6edde;
+  --color-cream-300: #efe0c5;
+  --color-cream-400: #e5cd9f;
+  --color-cream-500: #dcb376;
+  --color-cream-600: #cf9654;
+  --color-cream-700: #ad7842;
+  --color-cream-800: #8c603a;
+  --color-cream-900: #724f33;
+  --color-cream-950: #3e2919;
+
+  --color-sand-50: #f9f8f6;
+  --color-sand-100: #f1efe9;
+  --color-sand-200: #e3ded3;
+  --color-sand-300: #d0c6b3;
+  --color-sand-400: #b8a88d;
+  --color-sand-500: #a38d6d;
+  --color-sand-600: #887255;
+  --color-sand-700: #6e5c46;
+  --color-sand-800: #5b4d3d;
+  --color-sand-900: #4b4035;
+  --color-sand-950: #28221c;
+
+  --background: var(--color-cream-50);
+  --foreground: var(--color-emerald-950);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-emerald-*: initial;
+  --color-emerald-50: var(--color-emerald-50);
+  --color-emerald-100: var(--color-emerald-100);
+  --color-emerald-200: var(--color-emerald-200);
+  --color-emerald-300: var(--color-emerald-300);
+  --color-emerald-400: var(--color-emerald-400);
+  --color-emerald-500: var(--color-emerald-500);
+  --color-emerald-600: var(--color-emerald-600);
+  --color-emerald-700: var(--color-emerald-700);
+  --color-emerald-800: var(--color-emerald-800);
+  --color-emerald-900: var(--color-emerald-900);
+  --color-emerald-950: var(--color-emerald-950);
+
+  --color-cream-50: var(--color-cream-50);
+  --color-cream-100: var(--color-cream-100);
+  --color-cream-200: var(--color-cream-200);
+  --color-cream-300: var(--color-cream-300);
+  --color-cream-400: var(--color-cream-400);
+  --color-cream-500: var(--color-cream-500);
+  --color-cream-600: var(--color-cream-600);
+  --color-cream-700: var(--color-cream-700);
+  --color-cream-800: var(--color-cream-800);
+  --color-cream-900: var(--color-cream-900);
+  --color-cream-950: var(--color-cream-950);
+
+  --color-sand-50: var(--color-sand-50);
+  --color-sand-100: var(--color-sand-100);
+  --color-sand-200: var(--color-sand-200);
+  --color-sand-300: var(--color-sand-300);
+  --color-sand-400: var(--color-sand-400);
+  --color-sand-500: var(--color-sand-500);
+  --color-sand-600: var(--color-sand-600);
+  --color-sand-700: var(--color-sand-700);
+  --color-sand-800: var(--color-sand-800);
+  --color-sand-900: var(--color-sand-900);
+  --color-sand-950: var(--color-sand-950);
+
+  --font-sans: var(--font-outfit);
+  --font-serif: var(--font-playfair);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+}
