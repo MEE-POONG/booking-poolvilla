@@ -20,7 +20,7 @@ export default function LoginPage() {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Mock User Validation
-        if (identifier === "0616625565" && password === "526242") {
+        if (identifier === "testUse@mail.com" && password === "123456") {
             login(identifier, "Test User");
         } else {
             setError("Invalid username or password");
