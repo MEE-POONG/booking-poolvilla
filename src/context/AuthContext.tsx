@@ -5,6 +5,7 @@ interface User {
     id: string;
     name: string;
     email: string;
+    phone?: string;
 }
 
 interface AuthContextType {
@@ -12,6 +13,7 @@ interface AuthContextType {
     login: (email: string, name: string) => void;
     register: (email: string, name: string) => void;
     logout: () => void;
+    updateProfile: (name: string, email: string, phone: string) => void;
     isAuthenticated: boolean;
 }
 
@@ -48,6 +50,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         router.push("/login");
     };
 
+    const updateProfile = (name: string, email: string, phone: string) => {
+        if (user) {
+            const updatedUser = { ...user, name, email, phone };
+            setUser(updatedUser);
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -55,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 login,
                 register,
                 logout,
+                updateProfile,
                 isAuthenticated: !!user,
             }}
         >

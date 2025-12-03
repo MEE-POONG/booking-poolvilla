@@ -56,14 +56,11 @@ export default function Navbar() {
 
                     {isAuthenticated ? (
                         <div className="flex items-center gap-4">
-                            <span className={clsx("text-sm font-medium", isScrolled ? "text-gray-800" : "text-gray-900")}>
-                                Hi, {user?.name}
-                            </span>
                             <Link
-                                href="/bookings"
-                                className={clsx("text-sm font-medium transition-colors hover:text-emerald-600", isScrolled ? "text-gray-800" : "text-gray-900")}
+                                href="/profile"
+                                className={clsx("text-sm font-medium hover:text-emerald-600 transition-colors", isScrolled ? "text-gray-800" : "text-gray-900")}
                             >
-                                My Bookings
+                                Hi, {user?.name}
                             </Link>
                             <button
                                 onClick={logout}
@@ -127,9 +124,15 @@ export default function Navbar() {
                     {isAuthenticated ? (
                         <>
                             <div className="py-2 border-t border-gray-100">
-                                <p className="text-gray-500 text-sm mb-2">Signed in as {user?.name}</p>
                                 <Link
-                                    href="/bookings"
+                                    href="/profile"
+                                    className="block text-gray-500 text-sm mb-2 hover:text-emerald-600"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                    Signed in as {user?.name}
+                                </Link>
+                                <Link
+                                    href="/profile"
                                     className="block text-gray-800 font-medium py-2 hover:text-emerald-600"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
