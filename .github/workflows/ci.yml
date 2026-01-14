@@ -34,14 +34,121 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: 📤 Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: nextjs-build
-          path: |
-            .next/
-            public/
-          retention-days: 7
-
       - name: ✅ Build Success
         run: echo "🎉 Build completed successfully!"
+
+  docker:
+    name: Build & Push Docker Image
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 🔧 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔤 Convert Repository Name to Lowercase
+        id: string
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{ github.event.repository.name }}
+
+      - name: 🏗️ Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: ✅ Docker Build Success
+        run: echo "🐳 Docker image pushed successfully!"
+
+  deploy:
+    name: Deploy to Production
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔤 Convert Repository Name to Lowercase
+        id: string
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{ github.event.repository.name }}
+
+      - name: 📥 SSH Command - Docker Pull
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+
+      - name: 🛑 SSH Command - Docker Stop
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: docker stop ${{ steps.string.outputs.lowercase }} || true
+
+      - name: 🗑️ SSH Command - Docker Remove
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: docker rm ${{ steps.string.outputs.lowercase }} || true
+
+      - name: 🚀 SSH Command - Docker Run
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker run --name ${{ steps.string.outputs.lowercase }} \
+              --label io.portainer.accesscontrol.teams=discord \
+              --restart=always \
+              -d \
+              -p 7078:3000 \
+              -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              -e NEXT_PUBLIC_SOCKET_URL="${{ secrets.NEXT_PUBLIC_SOCKET_URL }}" \
+              -e REDIS_URL="${{ secrets.REDIS_URL }}" \
+              -e NODE_ENV="${{ secrets.NODE_ENV }}" \
+              --memory=512m \
+              --memory-swap=512m \
+              --cpus=1.5 \
+              --log-opt max-size=10m \
+              --log-opt max-file=3 \
+              chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+
+      - name: 🧹 SSH Command - Docker Image Prune
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: docker image prune -a -f
+
+      - name: 📋 SSH Command - Docker Logs
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: docker logs --timestamps --since=1h ${{ steps.string.outputs.lowercase }}
+
+      - name: ✅ Deployment Success
+        run: echo "🎉 Deployment completed successfully!"
+
