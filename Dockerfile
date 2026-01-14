@@ -4,8 +4,9 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy package files
-COPY package.json package-lock.json ./
-RUN npm ci --prefer-offline --no-audit
+COPY package.json ./
+COPY package-lock.json* ./
+RUN npm install --frozen-lockfile --prefer-offline --no-audit
 
 # Builder
 FROM node:20-alpine AS builder
