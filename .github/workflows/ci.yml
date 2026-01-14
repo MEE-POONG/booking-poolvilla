@@ -54,7 +54,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ steps.string.outputs.lowercase }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -79,7 +79,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
-          script: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+          script: docker pull ${{ secrets.DOCKER_USERNAME }}/${{ steps.string.outputs.lowercase }}:latest
 
       - name: 🛑 SSH Command - Docker Stop
         uses: appleboy/ssh-action@v1.0.3
@@ -110,12 +110,15 @@ jobs:
               -d \
               -p 7078:3000 \
               -e NODE_ENV=production \
+              -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+              -e NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}" \
+              -e NEXTAUTH_URL="${{ secrets.NEXTAUTH_URL }}" \
               --memory=512m \
               --memory-swap=512m \
               --cpus=1.5 \
               --log-opt max-size=10m \
               --log-opt max-file=3 \
-              chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+              ${{ secrets.DOCKER_USERNAME }}/${{ steps.string.outputs.lowercase }}:latest
 
       - name: 🧹 SSH Command - Docker Image Prune
         uses: appleboy/ssh-action@v1.0.3
