@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import { useRouter } from "next/router";
 
 interface User {
@@ -20,16 +20,15 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
-    const router = useRouter();
-
-    useEffect(() => {
-        // Check local storage on mount
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
+    const [user, setUser] = useState<User | null>(() => {
+        // Initialize from localStorage
+        if (typeof window !== 'undefined') {
+            const storedUser = localStorage.getItem("user");
+            return storedUser ? JSON.parse(storedUser) : null;
         }
-    }, []);
+        return null;
+    });
+    const router = useRouter();
 
     const login = (email: string, name: string) => {
         // Mock login logic

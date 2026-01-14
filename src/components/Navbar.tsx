@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Phone, Calendar, User, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
+import { Menu, X, Calendar, User, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
 import clsx from "clsx";
 import { useAuth } from "@/context/AuthContext";
 

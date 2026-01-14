@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import Hero from "@/components/Hero";
 import VillaCard from "@/components/VillaCard";
+import Link from "next/link";
 import { ArrowRight, Star, Shield, Heart } from "lucide-react";
 
 import { villas } from "@/data/villas";
@@ -49,10 +50,10 @@ export default function Home() {
               <span className="text-emerald-600 font-medium tracking-wider uppercase text-sm">Discover Luxury</span>
               <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mt-2">Featured Villas</h2>
             </div>
-            <a href="/villas" className="group flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors font-medium">
+            <Link href="/villas" className="group flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors font-medium">
               View All Villas
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </a>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -73,12 +74,12 @@ export default function Home() {
           <p className="text-emerald-100 text-lg mb-10 max-w-2xl mx-auto">
             Book your stay today and experience the magic of Khao Yai in our exclusive private pool villas.
           </p>
-          <a
+          <Link
             href="/book"
             className="inline-block bg-white text-emerald-900 px-10 py-4 rounded-full font-bold text-lg hover:bg-emerald-50 transition-all transform hover:scale-105 shadow-lg"
           >
             Book Your Stay Now
-          </a>
+          </Link>
         </div>
       </section>
     </Layout>

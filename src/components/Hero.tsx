@@ -21,7 +21,7 @@ export default function Hero() {
                     Welcome to Paradise
                 </span>
                 <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
-                    Escape to Nature's <br />
+                    Escape to Nature&apos;s <br />
                     <span className="text-emerald-300">Luxury Embrace</span>
                 </h1>
                 <p className="text-lg md:text-xl text-emerald-50 mb-10 max-w-2xl mx-auto leading-relaxed">

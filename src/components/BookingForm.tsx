@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { villas } from "@/data/villas";
 import { Calendar, Users, CheckCircle } from "lucide-react";
@@ -9,36 +9,18 @@ export default function BookingForm() {
     const { villaId } = router.query;
     const { user, isAuthenticated } = useAuth();
 
-    const [selectedVilla, setSelectedVilla] = useState(villaId || "");
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        phone: "",
+    const [selectedVilla, setSelectedVilla] = useState(typeof villaId === 'string' ? villaId : "");
+    const [formData, setFormData] = useState(() => ({
+        name: user?.name || "",
+        email: user?.email.includes("@") ? user.email : "",
+        phone: user?.email && !user.email.includes("@") ? user.email : "",
         checkIn: "",
         checkOut: "",
         guests: 2,
         message: "",
-    });
+    }));
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
-
-    useEffect(() => {
-        if (villaId) {
-            setSelectedVilla(villaId);
-        }
-    }, [villaId]);
-
-    // Pre-fill form with user data
-    useEffect(() => {
-        if (user) {
-            setFormData(prev => ({
-                ...prev,
-                name: user.name,
-                email: user.email.includes("@") ? user.email : "", // Only pre-fill if it looks like an email
-                phone: !user.email.includes("@") ? user.email : "", // Assume identifier is phone if not email
-            }));
-        }
-    }, [user]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;

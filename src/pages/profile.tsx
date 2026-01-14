@@ -67,7 +67,7 @@ export default function Profile() {
             await new Promise((resolve) => setTimeout(resolve, 1000));
             updateProfile(name, email, phone);
             setProfileMessage({ type: "success", text: "Profile updated successfully!" });
-        } catch (error) {
+        } catch {
             setProfileMessage({ type: "error", text: "Failed to update profile." });
         } finally {
             setIsProfileLoading(false);
@@ -174,8 +174,8 @@ export default function Profile() {
                                         {profileMessage && (
                                             <div
                                                 className={`mb-6 p-4 rounded-lg text-sm font-medium ${profileMessage.type === "success"
-                                                        ? "bg-green-50 text-green-700 border border-green-200"
-                                                        : "bg-red-50 text-red-700 border border-red-200"
+                                                    ? "bg-green-50 text-green-700 border border-green-200"
+                                                    : "bg-red-50 text-red-700 border border-red-200"
                                                     }`}
                                             >
                                                 {profileMessage.text}
@@ -277,7 +277,7 @@ export default function Profile() {
                                                     <Calendar size={32} />
                                                 </div>
                                                 <h3 className="text-lg font-bold text-gray-900 mb-2">No bookings found</h3>
-                                                <p className="text-gray-500 mb-6">You haven't made any bookings yet.</p>
+                                                <p className="text-gray-500 mb-6">You haven&apos;t made any bookings yet.</p>
                                                 <Link
                                                     href="/villas"
                                                     className="inline-block bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-emerald-700 transition-colors"

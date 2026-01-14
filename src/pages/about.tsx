@@ -32,7 +32,7 @@ export default function About() {
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
                     <h1 className="text-4xl md:text-6xl font-serif font-bold mb-4">About Khao Yai Villas</h1>
-                    <p className="text-lg md:text-xl text-emerald-50 font-light">Experience the perfect blend of luxury and nature in the heart of Thailand's most beautiful national park region.</p>
+                    <p className="text-lg md:text-xl text-emerald-50 font-light">Experience the perfect blend of luxury and nature in the heart of Thailand&apos;s most beautiful national park region.</p>
                 </div>
             </div>
 
@@ -53,7 +53,7 @@ export default function About() {
                             <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mt-2 mb-6">Redefining Luxury in Khao Yai</h2>
                             <div className="space-y-4 text-gray-600 leading-relaxed">
                                 <p>
-                                    Founded in 2015, Khao Yai Villas began with a simple vision: to create a sanctuary where guests could escape the city's bustle and reconnect with nature without compromising on comfort.
+                                    Founded in 2015, Khao Yai Villas began with a simple vision: to create a sanctuary where guests could escape the city&apos;s bustle and reconnect with nature without compromising on comfort.
                                 </p>
                                 <p>
                                     What started as a single family vacation home has grown into a premier collection of private pool villas, each uniquely designed to harmonize with the stunning surrounding landscape. We believe that true luxury lies in privacy, personalized service, and attention to detail.

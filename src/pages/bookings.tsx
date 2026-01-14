@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/Layout";
 import { useAuth } from "@/context/AuthContext";
-import { Calendar, MapPin, Clock } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 
 interface Booking {
     id: string;
@@ -23,29 +23,21 @@ interface Booking {
 export default function BookingsPage() {
     const { user, isAuthenticated } = useAuth();
     const router = useRouter();
-    const [bookings, setBookings] = useState<Booking[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [bookings] = useState<Booking[]>(() => {
+        if (typeof window !== 'undefined' && user) {
+            const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+            return storedBookings.filter((b: Booking) => b.userEmail === user.email);
+        }
+        return [];
+    });
+    const [isLoading] = useState(false);
 
     useEffect(() => {
         // Redirect if not logged in
-        if (!isAuthenticated && !isLoading) {
+        if (!isAuthenticated) {
             router.push("/login");
         }
-    }, [isAuthenticated, isLoading, router]);
-
-    useEffect(() => {
-        // Load bookings from local storage
-        const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-
-        // Filter bookings for current user if logged in, otherwise show none (or all for demo?)
-        // For this demo, let's filter by email if user is logged in
-        if (user) {
-            const userBookings = storedBookings.filter((b: Booking) => b.userEmail === user.email);
-            setBookings(userBookings);
-        }
-
-        setIsLoading(false);
-    }, [user]);
+    }, [isAuthenticated, router]);
 
     if (isLoading) {
         return (
@@ -70,7 +62,7 @@ export default function BookingsPage() {
                             <Calendar size={32} />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">No bookings found</h3>
-                        <p className="text-gray-600 mb-6">You haven't made any bookings yet.</p>
+                        <p className="text-gray-600 mb-6">You haven&apos;t made any bookings yet.</p>
                         <Link
                             href="/villas"
                             className="inline-block bg-emerald-600 text-white px-6 py-3 rounded-full font-medium hover:bg-emerald-700 transition-colors"

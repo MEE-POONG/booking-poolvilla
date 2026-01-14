@@ -140,7 +140,7 @@ export default function VillaDetail() {
                             </Link>
 
                             <p className="text-center text-sm text-gray-500 mt-4">
-                                You won't be charged yet
+                                You won&apos;t be charged yet
                             </p>
                         </div>
                     </div>
