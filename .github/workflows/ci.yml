@@ -8,8 +8,8 @@ on:
   workflow_dispatch: # Allow manual trigger from GitHub UI
 
 jobs:
-  build:
-    name: Build Next.js Application
+  test-build:
+    name: Test, Build & Push Docker Image
     runs-on: ubuntu-latest
 
     steps:
@@ -27,24 +27,12 @@ jobs:
 
       - name: 🔍 Run Linter
         run: npm run lint
-        continue-on-error: true # Don't fail build if linting has warnings
+        continue-on-error: true
 
       - name: 🏗️ Build Application
         run: npm run build
         env:
           NODE_ENV: production
-
-      - name: ✅ Build Success
-        run: echo "🎉 Build completed successfully!"
-
-  docker:
-    name: Build & Push Docker Image
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 📥 Checkout Code
-        uses: actions/checkout@v4
 
       - name: 🔐 Login to Docker Hub
         uses: docker/login-action@v3
@@ -61,7 +49,7 @@ jobs:
         with:
           string: ${{ github.event.repository.name }}
 
-      - name: 🏗️ Build and Push Docker Image
+      - name: 🐳 Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -70,12 +58,12 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: ✅ Docker Build Success
-        run: echo "🐳 Docker image pushed successfully!"
+      - name: ✅ Build Success
+        run: echo "🎉 Build and Docker push completed successfully!"
 
   deploy:
     name: Deploy to Production
-    needs: docker
+    needs: test-build
     runs-on: ubuntu-latest
 
     steps:
