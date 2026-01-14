@@ -109,11 +109,7 @@ jobs:
               --restart=always \
               -d \
               -p 7078:3000 \
-              -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-              -e NEXT_PUBLIC_SOCKET_URL="${{ secrets.NEXT_PUBLIC_SOCKET_URL }}" \
-              -e REDIS_URL="${{ secrets.REDIS_URL }}" \
-              -e NODE_ENV="${{ secrets.NODE_ENV }}" \
+              -e NODE_ENV=production \
               --memory=512m \
               --memory-swap=512m \
               --cpus=1.5 \
