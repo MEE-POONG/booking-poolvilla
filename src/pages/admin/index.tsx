@@ -7,11 +7,14 @@ import {
     ArrowUpRight,
     ArrowDownRight
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AdminDashboard() {
+    const { t } = useLanguage();
+
     const stats = [
         {
-            title: "Total Bookings",
+            title: t('admin.stats.bookings'),
             value: "154",
             change: "+12.5%",
             isPositive: true,
@@ -19,7 +22,7 @@ export default function AdminDashboard() {
             color: "bg-emerald-50"
         },
         {
-            title: "Total Villas",
+            title: t('admin.stats.villas'),
             value: "12",
             change: "0%",
             isPositive: true,
@@ -27,7 +30,7 @@ export default function AdminDashboard() {
             color: "bg-blue-50"
         },
         {
-            title: "Active Users",
+            title: t('admin.stats.users'),
             value: "842",
             change: "+15.3%",
             isPositive: true,
@@ -35,7 +38,7 @@ export default function AdminDashboard() {
             color: "bg-purple-50"
         },
         {
-            title: "Revenue",
+            title: t('admin.stats.revenue'),
             value: "฿842,000",
             change: "-2.4%",
             isPositive: false,
@@ -47,8 +50,8 @@ export default function AdminDashboard() {
     return (
         <AdminLayout>
             <div className="mb-8">
-                <h1 className="text-3xl font-serif font-bold text-gray-900">Dashboard Overview</h1>
-                <p className="text-gray-600">Welcome back, Admin. Here's what's happening today.</p>
+                <h1 className="text-3xl font-serif font-bold text-gray-900">{t('admin.overview')}</h1>
+                <p className="text-gray-600">{t('admin.welcome')}</p>
             </div>
 
             {/* Stats Grid */}
@@ -73,7 +76,7 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Recent Activity */}
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
-                    <h2 className="text-xl font-bold mb-4">Activity Chart</h2>
+                    <h2 className="text-xl font-bold mb-4">{t('admin.activity_chart')}</h2>
                     <div className="h-64 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 font-serif italic">
                         Chart Visualization Placeholder
                     </div>
@@ -81,7 +84,7 @@ export default function AdminDashboard() {
 
                 {/* Recent Bookings */}
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                    <h2 className="text-xl font-bold mb-6">Recent Bookings</h2>
+                    <h2 className="text-xl font-bold mb-6">{t('admin.recent_bookings')}</h2>
                     <div className="space-y-6">
                         {[1, 2, 3, 4].map((i) => (
                             <div key={i} className="flex items-center justify-between pb-4 border-b border-gray-50 last:border-0 last:pb-0">
@@ -97,7 +100,7 @@ export default function AdminDashboard() {
                                 <div className="text-right">
                                     <p className="font-bold text-gray-900 leading-tight">฿12,400</p>
                                     <span className="text-[10px] uppercase font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                                        Confirmed
+                                        {t('admin.confirmed')}
                                     </span>
                                 </div>
                             </div>

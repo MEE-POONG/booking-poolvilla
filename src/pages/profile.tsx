@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
 import { User, Mail, Save, Loader2, Phone, Calendar, LayoutDashboard, Clock, CreditCard, QrCode, Building2, Upload, X, Shield } from "lucide-react";
 import clsx from "clsx";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Booking {
     id: string;
@@ -24,6 +25,7 @@ interface Booking {
 export default function Profile() {
     const { user, updateProfile, isAuthenticated } = useAuth();
     const router = useRouter();
+    const { t } = useLanguage();
 
     // Profile State
     const [name, setName] = useState("");
@@ -120,8 +122,8 @@ export default function Profile() {
     }
 
     const sidebarLinks = [
-        { name: "Account", id: 'account', icon: LayoutDashboard },
-        { name: "My Booking", id: 'bookings', icon: Calendar },
+        { name: t('profile.sidebar.account'), id: 'account', icon: LayoutDashboard },
+        { name: t('profile.sidebar.bookings'), id: 'bookings', icon: Calendar },
     ];
 
     return (
@@ -163,7 +165,7 @@ export default function Profile() {
                                             className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
                                         >
                                             <Shield size={18} />
-                                            Admin Dashboard
+                                            {t('nav.admin')}
                                         </Link>
                                     </div>
                                 )}
@@ -177,8 +179,8 @@ export default function Profile() {
                             {activeTab === 'account' ? (
                                 <>
                                     <div className="px-6 py-6 border-b border-gray-100">
-                                        <h2 className="text-xl font-serif font-bold text-gray-900">Account Settings</h2>
-                                        <p className="text-sm text-gray-500 mt-1">Update your personal information</p>
+                                        <h2 className="text-xl font-serif font-bold text-gray-900">{t('profile.account_settings')}</h2>
+                                        <p className="text-sm text-gray-500 mt-1">{t('profile.update_info')}</p>
                                     </div>
 
                                     <div className="p-6">
@@ -196,7 +198,7 @@ export default function Profile() {
                                         <form onSubmit={handleProfileSubmit} className="space-y-6 max-w-xl">
                                             <div>
                                                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                                                    Full Name
+                                                    {t('profile.full_name')}
                                                 </label>
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -216,7 +218,7 @@ export default function Profile() {
 
                                             <div>
                                                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                                                    Email Address
+                                                    {t('profile.email')}
                                                 </label>
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -236,7 +238,7 @@ export default function Profile() {
 
                                             <div>
                                                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                                                    Phone Number
+                                                    {t('profile.phone')}
                                                 </label>
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -262,12 +264,12 @@ export default function Profile() {
                                                     {isProfileLoading ? (
                                                         <>
                                                             <Loader2 size={20} className="animate-spin" />
-                                                            Updating...
+                                                            {t('profile.saving')}
                                                         </>
                                                     ) : (
                                                         <>
                                                             <Save size={20} />
-                                                            Save Changes
+                                                            {t('profile.save_changes')}
                                                         </>
                                                     )}
                                                 </button>
@@ -278,8 +280,8 @@ export default function Profile() {
                             ) : (
                                 <>
                                     <div className="px-6 py-6 border-b border-gray-100">
-                                        <h2 className="text-xl font-serif font-bold text-gray-900">My Bookings</h2>
-                                        <p className="text-sm text-gray-500 mt-1">View your booking history</p>
+                                        <h2 className="text-xl font-serif font-bold text-gray-900">{t('profile.my_bookings')}</h2>
+                                        <p className="text-sm text-gray-500 mt-1">{t('profile.view_history')}</p>
                                     </div>
                                     <div className="p-6">
                                         {bookings.length === 0 ? (
@@ -287,13 +289,13 @@ export default function Profile() {
                                                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
                                                     <Calendar size={32} />
                                                 </div>
-                                                <h3 className="text-lg font-bold text-gray-900 mb-2">No bookings found</h3>
-                                                <p className="text-gray-500 mb-6">You haven&apos;t made any bookings yet.</p>
+                                                <h3 className="text-lg font-bold text-gray-900 mb-2">{t('profile.no_bookings')}</h3>
+                                                <p className="text-gray-500 mb-6">{t('profile.no_bookings_desc')}</p>
                                                 <Link
                                                     href="/villas"
                                                     className="inline-block bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-emerald-700 transition-colors"
                                                 >
-                                                    Browse Villas
+                                                    {t('profile.browse_villas')}
                                                 </Link>
                                             </div>
                                         ) : (
@@ -323,22 +325,22 @@ export default function Profile() {
                                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-sm text-gray-600">
                                                                     <div className="flex items-center gap-2">
                                                                         <Calendar size={16} className="text-emerald-500" />
-                                                                        <span>Check-in: {booking.checkIn}</span>
+                                                                        <span>{t('profile.check_in')}: {booking.checkIn}</span>
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
                                                                         <Calendar size={16} className="text-emerald-500" />
-                                                                        <span>Check-out: {booking.checkOut}</span>
+                                                                        <span>{t('profile.check_out')}: {booking.checkOut}</span>
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
                                                                         <Clock size={16} className="text-emerald-500" />
-                                                                        <span>Booked on: {new Date(booking.date).toLocaleDateString()}</span>
+                                                                        <span>{t('profile.booked_on')}: {new Date(booking.date).toLocaleDateString()}</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
 
                                                             <div className="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
                                                                 <div>
-                                                                    <span className="text-xs text-gray-500 uppercase tracking-wider">Total Price</span>
+                                                                    <span className="text-xs text-gray-500 uppercase tracking-wider">{t('profile.total_price')}</span>
                                                                     <div className="text-lg font-bold text-emerald-900">฿{booking.totalPrice.toLocaleString()}</div>
                                                                 </div>
 
@@ -349,14 +351,14 @@ export default function Profile() {
                                                                             className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2"
                                                                         >
                                                                             <CreditCard size={16} />
-                                                                            Pay Now
+                                                                            {t('profile.pay_now')}
                                                                         </button>
                                                                     )}
                                                                     <Link
                                                                         href={`/villas/${booking.villaId}`}
                                                                         className="text-emerald-600 font-medium hover:text-emerald-700 text-sm"
                                                                     >
-                                                                        View Villa
+                                                                        {t('profile.view_villa')}
                                                                     </Link>
                                                                 </div>
                                                             </div>

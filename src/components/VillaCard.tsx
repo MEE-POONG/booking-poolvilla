@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Users, Bed, Bath, Maximize } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface VillaProps {
     id: string;
@@ -15,6 +16,8 @@ interface VillaProps {
 }
 
 export default function VillaCard({ villa }: { villa: VillaProps }) {
+    const { t } = useLanguage();
+
     return (
         <div className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
             {/* Image Container */}
@@ -26,7 +29,7 @@ export default function VillaCard({ villa }: { villa: VillaProps }) {
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-emerald-800">
-                    ฿{villa.price.toLocaleString()} / night
+                    ฿{villa.price.toLocaleString()} {t('villa.night')}
                 </div>
             </div>
 
@@ -43,15 +46,15 @@ export default function VillaCard({ villa }: { villa: VillaProps }) {
                 <div className="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
                         <Users size={18} className="text-emerald-500" />
-                        <span>{villa.guests} Guests</span>
+                        <span>{villa.guests} {t('villa.guests')}</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <Bed size={18} className="text-emerald-500" />
-                        <span>{villa.bedrooms} Bedrooms</span>
+                        <span>{villa.bedrooms} {t('villa.bedrooms')}</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <Bath size={18} className="text-emerald-500" />
-                        <span>{villa.bathrooms} Baths</span>
+                        <span>{villa.bathrooms} {t('villa.baths')}</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <Maximize size={18} className="text-emerald-500" />
@@ -63,7 +66,7 @@ export default function VillaCard({ villa }: { villa: VillaProps }) {
                     href={`/villas/${villa.id}`}
                     className="block w-full text-center py-3 border border-emerald-600 text-emerald-600 rounded-xl font-medium hover:bg-emerald-600 hover:text-white transition-all duration-300"
                 >
-                    View Details
+                    {t('villa.view_details')}
                 </Link>
             </div>
         </div>

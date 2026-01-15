@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Playfair_Display, Outfit } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -16,9 +17,11 @@ const outfit = Outfit({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
-      <div className={`${playfair.variable} ${outfit.variable} font-sans antialiased`}>
-        <Component {...pageProps} />
-      </div>
+      <LanguageProvider>
+        <div className={`${playfair.variable} ${outfit.variable} font-sans antialiased`}>
+          <Component {...pageProps} />
+        </div>
+      </LanguageProvider>
     </AuthProvider>
   );
 }

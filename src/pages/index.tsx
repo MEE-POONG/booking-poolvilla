@@ -5,10 +5,12 @@ import Link from "next/link";
 import { ArrowRight, Star, Shield, Heart } from "lucide-react";
 
 import { villas } from "@/data/villas";
+import { useLanguage } from "@/context/LanguageContext";
 
 const FEATURED_VILLAS = villas;
 
 export default function Home() {
+  const { t } = useLanguage();
   return (
     <Layout>
       <Hero />
@@ -21,22 +23,22 @@ export default function Home() {
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-600">
                 <Star size={32} />
               </div>
-              <h3 className="text-xl font-serif font-bold mb-3 text-gray-900">Premium Quality</h3>
-              <p className="text-gray-600">Hand-picked luxury villas ensuring the highest standards of comfort and style.</p>
+              <h3 className="text-xl font-serif font-bold mb-3 text-gray-900">{t('features.quality.title')}</h3>
+              <p className="text-gray-600">{t('features.quality.desc')}</p>
             </div>
             <div className="p-6 rounded-2xl bg-emerald-50/50 hover:bg-emerald-50 transition-colors">
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-600">
                 <Shield size={32} />
               </div>
-              <h3 className="text-xl font-serif font-bold mb-3 text-gray-900">Secure Booking</h3>
-              <p className="text-gray-600">Safe and secure payment process with instant confirmation for your peace of mind.</p>
+              <h3 className="text-xl font-serif font-bold mb-3 text-gray-900">{t('features.secure.title')}</h3>
+              <p className="text-gray-600">{t('features.secure.desc')}</p>
             </div>
             <div className="p-6 rounded-2xl bg-emerald-50/50 hover:bg-emerald-50 transition-colors">
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-600">
                 <Heart size={32} />
               </div>
-              <h3 className="text-xl font-serif font-bold mb-3 text-gray-900">Best Experience</h3>
-              <p className="text-gray-600">Dedicated support team to ensure your stay is nothing short of perfection.</p>
+              <h3 className="text-xl font-serif font-bold mb-3 text-gray-900">{t('features.experience.title')}</h3>
+              <p className="text-gray-600">{t('features.experience.desc')}</p>
             </div>
           </div>
         </div>
@@ -47,11 +49,11 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
             <div>
-              <span className="text-emerald-600 font-medium tracking-wider uppercase text-sm">Discover Luxury</span>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mt-2">Featured Villas</h2>
+              <span className="text-emerald-600 font-medium tracking-wider uppercase text-sm">{t('home.luxury_label')}</span>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mt-2">{t('home.featured_title')}</h2>
             </div>
             <Link href="/villas" className="group flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors font-medium">
-              View All Villas
+              {t('home.view_all')}
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -69,16 +71,16 @@ export default function Home() {
         <div className="absolute inset-0 opacity-10 bg-[url('/images/pattern.png')]"></div>
         <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
-            Ready for your dream vacation?
+            {t('cta.title')}
           </h2>
           <p className="text-emerald-100 text-lg mb-10 max-w-2xl mx-auto">
-            Book your stay today and experience the magic of Khao Yai in our exclusive private pool villas.
+            {t('cta.description')}
           </p>
           <Link
             href="/book"
             className="inline-block bg-white text-emerald-900 px-10 py-4 rounded-full font-bold text-lg hover:bg-emerald-50 transition-all transform hover:scale-105 shadow-lg"
           >
-            Book Your Stay Now
+            {t('cta.button')}
           </Link>
         </div>
       </section>

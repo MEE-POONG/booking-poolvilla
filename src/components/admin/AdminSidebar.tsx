@@ -10,34 +10,36 @@ import {
     Palmtree
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const AdminSidebar = () => {
     const router = useRouter();
     const { logout } = useAuth();
+    const { t } = useLanguage();
 
     const menuItems = [
         {
-            title: "Overview",
+            title: t('admin.menu.overview'),
             icon: <LayoutDashboard size={20} />,
             path: "/admin"
         },
         {
-            title: "Villas",
+            title: t('admin.menu.villas'),
             icon: <Palmtree size={20} />,
             path: "/admin/villas"
         },
         {
-            title: "Bookings",
+            title: t('admin.menu.bookings'),
             icon: <Calendar size={20} />,
             path: "/admin/bookings"
         },
         {
-            title: "Users",
+            title: t('admin.menu.users'),
             icon: <Users size={20} />,
             path: "/admin/users"
         },
         {
-            title: "Back to Site",
+            title: t('admin.menu.back_to_site'),
             icon: <Home size={20} />,
             path: "/"
         },
@@ -50,7 +52,7 @@ const AdminSidebar = () => {
                     <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
                         <BarChart3 className="text-white" size={20} />
                     </div>
-                    <span className="text-xl font-serif font-bold tracking-tight">Admin CMS</span>
+                    <span className="text-xl font-serif font-bold tracking-tight">{t('admin.cms_title')}</span>
                 </Link>
             </div>
 
@@ -62,8 +64,8 @@ const AdminSidebar = () => {
                             key={item.path}
                             href={item.path}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
-                                    ? "bg-emerald-600 text-white shadow-lg"
-                                    : "text-emerald-100 hover:bg-emerald-800 hover:text-white"
+                                ? "bg-emerald-600 text-white shadow-lg"
+                                : "text-emerald-100 hover:bg-emerald-800 hover:text-white"
                                 }`}
                         >
                             {item.icon}
@@ -79,7 +81,7 @@ const AdminSidebar = () => {
                     className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-emerald-100 hover:bg-red-900/50 hover:text-red-200 transition-all"
                 >
                     <LogOut size={20} />
-                    <span className="font-medium">Logout</span>
+                    <span className="font-medium">{t('nav.logout')}</span>
                 </button>
             </div>
         </aside>

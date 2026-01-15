@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Calendar, User, LogOut, ChevronDown, LayoutDashboard, Shield } from "lucide-react";
+import { Menu, X, Calendar, User, LogOut, ChevronDown, LayoutDashboard, Shield, Globe } from "lucide-react";
 import clsx from "clsx";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Navbar() {
     const { user, logout, isAuthenticated } = useAuth();
+    const { language, setLanguage, t } = useLanguage();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -34,10 +36,10 @@ export default function Navbar() {
     }, []);
 
     const navLinks = [
-        { name: "Home", href: "/" },
-        { name: "Villas", href: "/villas" },
-        { name: "About Us", href: "/about" },
-        { name: "Contact", href: "/contact" },
+        { name: t('nav.home'), href: "/" },
+        { name: t('nav.villas'), href: "/villas" },
+        { name: t('nav.about'), href: "/about" },
+        { name: t('nav.contact'), href: "/contact" },
     ];
 
     return (
@@ -70,6 +72,21 @@ export default function Navbar() {
                         </Link>
                     ))}
 
+                    {/* Language Switcher */}
+                    <button
+                        onClick={() => setLanguage(language === 'en' ? 'th' : 'en')}
+                        className={clsx(
+                            "flex items-center gap-2 text-sm font-medium transition-all px-3 py-1.5 rounded-full",
+                            isScrolled
+                                ? "text-gray-700 bg-gray-100 hover:bg-emerald-100 hover:text-emerald-700 hover:shadow-sm"
+                                : "text-gray-900 bg-white/50 backdrop-blur-sm hover:bg-white hover:text-emerald-700 hover:shadow-md border border-transparent hover:border-emerald-100"
+                        )}
+                        aria-label="Switch Language"
+                    >
+                        <Globe size={16} className={language === 'en' ? 'text-gray-500' : 'text-emerald-500'} />
+                        <span>{language === 'en' ? 'EN' : 'TH'}</span>
+                    </button>
+
                     {isAuthenticated ? (
                         <div className="flex items-center gap-4">
                             <div className="relative" ref={dropdownRef}>
@@ -91,7 +108,7 @@ export default function Navbar() {
                                 {isDropdownOpen && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 animate-in fade-in zoom-in-95 duration-200">
                                         <div className="px-4 py-3 border-b border-gray-100">
-                                            <p className="text-xs text-gray-500">Signed in as</p>
+                                            <p className="text-xs text-gray-500">{t('nav.signed_in_as')}</p>
                                             <p className="text-sm font-bold text-gray-900 truncate">{user?.email}</p>
                                         </div>
                                         <Link
@@ -100,7 +117,7 @@ export default function Navbar() {
                                             onClick={() => setIsDropdownOpen(false)}
                                         >
                                             <User size={16} />
-                                            My Profile
+                                            {t('nav.profile')}
                                         </Link>
                                         {user?.role === "admin" && (
                                             <Link
@@ -109,7 +126,7 @@ export default function Navbar() {
                                                 onClick={() => setIsDropdownOpen(false)}
                                             >
                                                 <Shield size={16} />
-                                                Admin Dashboard
+                                                {t('nav.admin')}
                                             </Link>
                                         )}
                                         <Link
@@ -118,7 +135,7 @@ export default function Navbar() {
                                             onClick={() => setIsDropdownOpen(false)}
                                         >
                                             <Calendar size={16} />
-                                            My Bookings
+                                            {t('nav.bookings')}
                                         </Link>
                                         <div className="border-t border-gray-100 my-1"></div>
                                         <button
@@ -129,7 +146,7 @@ export default function Navbar() {
                                             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                                         >
                                             <LogOut size={16} />
-                                            Logout
+                                            {t('nav.logout')}
                                         </button>
                                     </div>
                                 )}
@@ -140,7 +157,7 @@ export default function Navbar() {
                                 className="bg-emerald-600 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2"
                             >
                                 <Calendar size={16} />
-                                Book Now
+                                {t('nav.book_now')}
                             </Link>
                         </div>
                     ) : (
@@ -152,13 +169,13 @@ export default function Navbar() {
                                     isScrolled ? "text-gray-800" : "text-gray-900"
                                 )}
                             >
-                                Login
+                                {t('nav.login')}
                             </Link>
                             <Link
                                 href="/register"
                                 className="bg-emerald-600 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2"
                             >
-                                Register
+                                {t('nav.register')}
                             </Link>
                         </div>
                     )}
@@ -187,6 +204,18 @@ export default function Navbar() {
                         </Link>
                     ))}
 
+                    {/* Mobile Language Switcher */}
+                    <button
+                        onClick={() => {
+                            setLanguage(language === 'en' ? 'th' : 'en');
+                            setIsMobileMenuOpen(false);
+                        }}
+                        className="flex items-center gap-2 text-left text-gray-800 font-medium py-2 hover:text-emerald-600 transition-colors"
+                    >
+                        <Globe size={18} />
+                        <span>Language: {language === 'en' ? 'English' : 'ไทย'}</span>
+                    </button>
+
                     {isAuthenticated ? (
                         <>
                             <div className="py-2 border-t border-gray-100">
@@ -205,7 +234,7 @@ export default function Navbar() {
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     <LayoutDashboard size={18} />
-                                    My Profile
+                                    {t('nav.profile')}
                                 </Link>
                                 <Link
                                     href="/profile"
@@ -213,7 +242,7 @@ export default function Navbar() {
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     <Calendar size={18} />
-                                    My Bookings
+                                    {t('nav.bookings')}
                                 </Link>
                                 <button
                                     onClick={() => {
@@ -223,7 +252,7 @@ export default function Navbar() {
                                     className="w-full flex items-center gap-2 px-2 py-2 text-red-500 hover:text-red-600"
                                 >
                                     <LogOut size={18} />
-                                    Logout
+                                    {t('nav.logout')}
                                 </button>
                             </div>
                             <Link
@@ -231,7 +260,7 @@ export default function Navbar() {
                                 className="bg-emerald-600 text-white px-6 py-3 rounded-lg text-center font-medium hover:bg-emerald-700 transition-colors"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
-                                Book Now
+                                {t('nav.book_now')}
                             </Link>
                         </>
                     ) : (
@@ -241,14 +270,14 @@ export default function Navbar() {
                                 className="text-gray-800 font-medium py-2 hover:text-emerald-600"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
-                                Login
+                                {t('nav.login')}
                             </Link>
                             <Link
                                 href="/register"
                                 className="bg-emerald-600 text-white px-6 py-3 rounded-lg text-center font-medium hover:bg-emerald-700 transition-colors"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
-                                Register
+                                {t('nav.register')}
                             </Link>
                         </>
                     )}

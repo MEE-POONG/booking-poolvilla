@@ -3,6 +3,8 @@ import AdminSidebar from "./AdminSidebar";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { Globe } from "lucide-react";
 
 interface AdminLayoutProps {
     children: React.ReactNode;
@@ -11,6 +13,7 @@ interface AdminLayoutProps {
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     const { user, loading } = useAuth();
     const router = useRouter();
+    const { language, setLanguage } = useLanguage();
 
     // Simple protection for now
     // In a real app, you'd check for an 'isAdmin' flag on the user
@@ -33,6 +36,16 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             <AdminSidebar />
             <main className="flex-1 ml-64 p-8">
                 <div className="max-w-7xl mx-auto">
+                    {/* Header with Language Switcher */}
+                    <div className="flex justify-end mb-4">
+                        <button
+                            onClick={() => setLanguage(language === 'en' ? 'th' : 'en')}
+                            className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm text-sm font-medium text-gray-700 hover:text-emerald-600 border border-gray-200 transition-all hover:border-emerald-200"
+                        >
+                            <Globe size={16} />
+                            <span>{language === 'en' ? 'EN' : 'TH'}</span>
+                        </button>
+                    </div>
                     {children}
                 </div>
             </main>

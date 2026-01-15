@@ -3,11 +3,13 @@ import { useRouter } from "next/router";
 import { villas } from "@/data/villas";
 import { Calendar, Users, CheckCircle } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function BookingForm() {
     const router = useRouter();
     const { villaId } = router.query;
     const { user, isAuthenticated } = useAuth();
+    const { t } = useLanguage();
 
     const [selectedVilla, setSelectedVilla] = useState(typeof villaId === 'string' ? villaId : "");
     const [formData, setFormData] = useState(() => ({
@@ -64,15 +66,15 @@ export default function BookingForm() {
                 <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle size={40} className="text-emerald-600" />
                 </div>
-                <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">Booking Request Sent!</h2>
+                <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">{t('booking.success_title')}</h2>
                 <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                    Thank you for choosing Khao Yai Pool Villas. We have received your booking request and will contact you shortly to confirm your stay.
+                    {t('booking.success_desc')}
                 </p>
                 <button
                     onClick={() => router.push("/")}
                     className="bg-emerald-600 text-white px-8 py-3 rounded-full font-medium hover:bg-emerald-700 transition-colors"
                 >
-                    Return to Home
+                    {t('booking.return_home')}
                 </button>
             </div>
         );
@@ -80,24 +82,24 @@ export default function BookingForm() {
 
     return (
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-            <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6">Book Your Stay</h2>
+            <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6">{t('booking.title')}</h2>
 
             {!isAuthenticated && (
                 <div className="mb-6 p-4 bg-emerald-50 rounded-lg text-sm text-emerald-800 flex justify-between items-center">
-                    <span>Sign in to book faster!</span>
+                    <span>{t('booking.sign_in_promo')}</span>
                     <button
                         type="button"
                         onClick={() => router.push("/login")}
                         className="text-emerald-600 font-bold hover:underline"
                     >
-                        Login Here
+                        {t('booking.login_here')}
                     </button>
                 </div>
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Select Villa</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('booking.select_villa')}</label>
                     <select
                         name="villa"
                         value={selectedVilla}
@@ -105,17 +107,17 @@ export default function BookingForm() {
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                         required
                     >
-                        <option value="">-- Choose a Villa --</option>
+                        <option value="">{t('booking.choose_villa')}</option>
                         {villas.map((v) => (
                             <option key={v.id} value={v.id}>
-                                {v.name} - ฿{v.price.toLocaleString()}/night
+                                {v.name} - ฿{v.price.toLocaleString()}{t('villa.night')}
                             </option>
                         ))}
                     </select>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Check-in Date</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('booking.check_in_date')}</label>
                     <div className="relative">
                         <Calendar className="absolute left-3 top-3 text-gray-400" size={20} />
                         <input
@@ -130,7 +132,7 @@ export default function BookingForm() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Check-out Date</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('booking.check_out_date')}</label>
                     <div className="relative">
                         <Calendar className="absolute left-3 top-3 text-gray-400" size={20} />
                         <input
@@ -145,7 +147,7 @@ export default function BookingForm() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Guests</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('booking.guests')}</label>
                     <div className="relative">
                         <Users className="absolute left-3 top-3 text-gray-400" size={20} />
                         <input
@@ -164,7 +166,7 @@ export default function BookingForm() {
 
             <div className="space-y-6 mb-8">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('profile.full_name')}</label>
                     <input
                         type="text"
                         name="name"
@@ -178,7 +180,7 @@ export default function BookingForm() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('profile.email')}</label>
                         <input
                             type="email"
                             name="email"
@@ -190,7 +192,7 @@ export default function BookingForm() {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('profile.phone')}</label>
                         <input
                             type="tel"
                             name="phone"
@@ -204,13 +206,13 @@ export default function BookingForm() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Special Requests</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('booking.special_requests')}</label>
                     <textarea
                         name="message"
                         value={formData.message}
                         onChange={handleChange}
                         rows={4}
-                        placeholder="Any special requirements or questions?"
+                        placeholder={t('booking.special_requests_placeholder')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none"
                     ></textarea>
                 </div>
@@ -221,7 +223,7 @@ export default function BookingForm() {
                 disabled={isSubmitting}
                 className="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-emerald-700 transition-colors shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
             >
-                {isSubmitting ? "Processing..." : "Confirm Booking Request"}
+                {isSubmitting ? t('booking.processing') : t('booking.confirm_button')}
             </button>
         </form>
     );

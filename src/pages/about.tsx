@@ -1,25 +1,28 @@
 import Layout from "@/components/Layout";
 import Image from "next/image";
 import { CheckCircle2, Users, Star, Award } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function About() {
+    const { t } = useLanguage();
+
     const features = [
-        "Private Swimming Pools in Every Villa",
-        "Breathtaking Mountain Views",
-        "24/7 Concierge Service",
-        "Premium Amenities & Facilities",
-        "Pet-Friendly Options Available",
-        "Curated Local Experiences"
+        t('about.feature.pools'),
+        t('about.feature.views'),
+        t('about.feature.concierge'),
+        t('about.feature.amenities'),
+        t('about.feature.pets'),
+        t('about.feature.local'),
     ];
 
     const stats = [
-        { label: "Happy Guests", value: "5,000+", icon: Users },
-        { label: "Luxury Villas", value: "20+", icon: Star },
-        { label: "Years of Excellence", value: "10", icon: Award },
+        { label: t('about.stats.happy_guests'), value: "5,000+", icon: Users },
+        { label: t('about.stats.luxury_villas'), value: "20+", icon: Star },
+        { label: t('about.stats.years'), value: "10", icon: Award },
     ];
 
     return (
-        <Layout title="About Us - Khao Yai Pool Villas">
+        <Layout title={`${t('about.title')} - Khao Yai Pool Villas`}>
             {/* Hero Section */}
             <div className="relative h-[60vh] min-h-[400px] flex items-center justify-center text-white">
                 <Image
@@ -31,8 +34,8 @@ export default function About() {
                 />
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-                    <h1 className="text-4xl md:text-6xl font-serif font-bold mb-4">About Khao Yai Villas</h1>
-                    <p className="text-lg md:text-xl text-emerald-50 font-light">Experience the perfect blend of luxury and nature in the heart of Thailand&apos;s most beautiful national park region.</p>
+                    <h1 className="text-4xl md:text-6xl font-serif font-bold mb-4">{t('about.title')}</h1>
+                    <p className="text-lg md:text-xl text-emerald-50 font-light">{t('about.subtitle')}</p>
                 </div>
             </div>
 
@@ -49,18 +52,12 @@ export default function About() {
                             />
                         </div>
                         <div className="w-full md:w-1/2">
-                            <span className="text-emerald-600 font-semibold tracking-wider uppercase text-sm">Our Story</span>
-                            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mt-2 mb-6">Redefining Luxury in Khao Yai</h2>
+                            <span className="text-emerald-600 font-semibold tracking-wider uppercase text-sm">{t('about.story_label')}</span>
+                            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mt-2 mb-6">{t('about.story_title')}</h2>
                             <div className="space-y-4 text-gray-600 leading-relaxed">
-                                <p>
-                                    Founded in 2015, Khao Yai Villas began with a simple vision: to create a sanctuary where guests could escape the city&apos;s bustle and reconnect with nature without compromising on comfort.
-                                </p>
-                                <p>
-                                    What started as a single family vacation home has grown into a premier collection of private pool villas, each uniquely designed to harmonize with the stunning surrounding landscape. We believe that true luxury lies in privacy, personalized service, and attention to detail.
-                                </p>
-                                <p>
-                                    Our team is dedicated to ensuring that every stay is memorable. From the moment you book until you wave goodbye, we are here to curate an experience that exceeds your expectations.
-                                </p>
+                                <p>{t('about.story_p1')}</p>
+                                <p>{t('about.story_p2')}</p>
+                                <p>{t('about.story_p3')}</p>
                             </div>
                         </div>
                     </div>
@@ -88,8 +85,8 @@ export default function About() {
             <section className="py-20 bg-gray-50">
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="text-center max-w-3xl mx-auto mb-16">
-                        <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Why Choose Us</h2>
-                        <p className="text-gray-600">We go above and beyond to provide an exceptional holiday experience for you and your loved ones.</p>
+                        <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">{t('about.why_choose')}</h2>
+                        <p className="text-gray-600">{t('about.why_choose_desc')}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
