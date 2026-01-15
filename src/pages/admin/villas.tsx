@@ -12,6 +12,7 @@ import {
     Maximize2
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function VillaManagement() {
     return (
@@ -103,9 +104,13 @@ export default function VillaManagement() {
                                             <button className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all" title="View">
                                                 <ExternalLink size={18} />
                                             </button>
-                                            <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Edit">
+                                            <Link
+                                                href={`/admin/villas/edit/${villa.id}`}
+                                                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                title="Edit"
+                                            >
                                                 <Edit2 size={18} />
-                                            </button>
+                                            </Link>
                                             <button className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Delete">
                                                 <Trash2 size={18} />
                                             </button>
