@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { villas, Villa } from "@/data/villas";
 import {
     Save,
     ArrowLeft,
@@ -10,8 +9,9 @@ import {
     CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import clsx from "clsx";
+import Image from "next/image";
+import { useLanguage } from "@/context/LanguageContext";
 
 const PREDEFINED_AMENITIES = [
     "Private Infinity Pool",
@@ -35,30 +35,29 @@ const PREDEFINED_AMENITIES = [
     "Room Service"
 ];
 
-export default function EditVilla() {
+export default function AddVilla() {
     const router = useRouter();
-    const { id } = router.query;
+    const { t } = useLanguage();
 
-    const [villa, setVilla] = useState<Villa | null>(null);
-    const [formData, setFormData] = useState<any>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [formData, setFormData] = useState({
+        name: "",
+        description: "",
+        price: 0,
+        guests: 0,
+        bedrooms: 0,
+        bathrooms: 0,
+        size: 0,
+        imageUrl: "/images/villa-placeholder.png",
+        features: ["Private Infinity Pool", "Mountain View"],
+        images: ["/images/villa-placeholder.png"]
+    });
+
     const [isSaving, setIsSaving] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    useEffect(() => {
-        if (id) {
-            const foundVilla = villas.find(v => v.id === id);
-            if (foundVilla) {
-                setVilla(foundVilla);
-                setFormData({ ...foundVilla });
-            }
-            setIsLoading(false);
-        }
-    }, [id]);
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData((prev: any) => ({
+        setFormData((prev) => ({
             ...prev,
             [name]: name === 'price' || name === 'guests' || name === 'bedrooms' || name === 'bathrooms' || name === 'size'
                 ? parseFloat(value) || 0
@@ -67,10 +66,10 @@ export default function EditVilla() {
     };
 
     const handleFeatureToggle = (feature: string) => {
-        setFormData((prev: any) => {
+        setFormData((prev) => {
             const isSelected = prev.features.includes(feature);
             const newFeatures = isSelected
-                ? prev.features.filter((f: string) => f !== feature)
+                ? prev.features.filter(f => f !== feature)
                 : [...prev.features, feature];
             return { ...prev, features: newFeatures };
         });
@@ -92,16 +91,6 @@ export default function EditVilla() {
         }, 2000);
     };
 
-    if (isLoading || !formData) {
-        return (
-            <AdminLayout>
-                <div className="flex items-center justify-center min-h-[60vh]">
-                    <Loader2 className="animate-spin text-emerald-600" size={40} />
-                </div>
-            </AdminLayout>
-        );
-    }
-
     return (
         <AdminLayout>
             <div className="mb-8 flex items-center justify-between">
@@ -109,7 +98,7 @@ export default function EditVilla() {
                     <Link href="/admin/villas" className="text-sm text-emerald-600 flex items-center gap-1 hover:underline mb-2">
                         <ArrowLeft size={14} /> Back to Villas
                     </Link>
-                    <h1 className="text-3xl font-serif font-bold text-gray-900">Edit Villa: {villa?.name}</h1>
+                    <h1 className="text-3xl font-serif font-bold text-gray-900">Add New Villa</h1>
                 </div>
 
                 <button
@@ -122,14 +111,14 @@ export default function EditVilla() {
                     ) : (
                         <Save size={20} />
                     )}
-                    {isSaving ? "Saving..." : "Save Changes"}
+                    {isSaving ? "Saving..." : "Add Villa"}
                 </button>
             </div>
 
             {success && (
                 <div className="mb-6 bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex items-center gap-3 text-emerald-700 animate-in fade-in slide-in-from-top-4">
                     <CheckCircle2 size={20} />
-                    <p className="font-medium">Changes saved successfully! Redirecting...</p>
+                    <p className="font-medium">Villa created successfully! Redirecting...</p>
                 </div>
             )}
 
@@ -148,6 +137,7 @@ export default function EditVilla() {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
+                                    placeholder="e.g. Luxury Forest Retreat"
                                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
                                 />
                             </div>
@@ -158,6 +148,7 @@ export default function EditVilla() {
                                     rows={4}
                                     value={formData.description}
                                     onChange={handleChange}
+                                    placeholder="Describe your villa..."
                                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
                                 />
                             </div>
@@ -234,25 +225,17 @@ export default function EditVilla() {
                 <div className="space-y-8">
                     <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                         <h2 className="text-xl font-bold mb-6">Main Image</h2>
-                        <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-100 border border-gray-200 mb-4 group cursor-pointer">
-                            <Image
-                                src={formData.imageUrl}
-                                alt="Main"
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform"
-                            />
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <div className="text-white text-sm font-bold flex items-center gap-2">
-                                    <ImageIcon size={20} />
-                                    Change Image
-                                </div>
+                        <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-100 border border-gray-200 mb-4 group cursor-pointer flex items-center justify-center">
+                            <div className="text-gray-400 flex flex-col items-center gap-2">
+                                <ImageIcon size={40} />
+                                <span className="text-sm font-medium">Upload Image</span>
                             </div>
                         </div>
                         <p className="text-xs text-gray-500 text-center italic">Supported formats: JPG, PNG. Max size: 2MB</p>
                     </div>
 
                     <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                        <h2 className="text-xl font-bold mb-4">Settings</h2>
+                        <h2 className="text-xl font-bold mb-4">Initial Settings</h2>
                         <div className="space-y-4">
                             <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
                                 <div>
@@ -261,16 +244,6 @@ export default function EditVilla() {
                                 </div>
                                 <div className="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" className="sr-only peer" defaultChecked />
-                                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                                <div>
-                                    <p className="text-sm font-bold text-gray-900 leading-tight">Featured</p>
-                                    <p className="text-[10px] text-gray-500 uppercase tracking-wider">Show on homepage</p>
-                                </div>
-                                <div className="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" className="sr-only peer" />
                                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
                                 </div>
                             </div>

@@ -22,10 +22,13 @@ export default function VillaManagement() {
                     <h1 className="text-3xl font-serif font-bold text-gray-900">Villas Management</h1>
                     <p className="text-gray-600">Manage your property listings and availability.</p>
                 </div>
-                <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-emerald-700 transition-all shadow-md">
+                <Link
+                    href="/admin/villas/add"
+                    className="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-emerald-700 transition-all shadow-md"
+                >
                     <Plus size={20} />
                     Add New Villa
-                </button>
+                </Link>
             </div>
 
             {/* Filters & Search */}
