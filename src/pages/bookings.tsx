@@ -115,12 +115,20 @@ export default function BookingsPage() {
                                             <span className="text-xs text-gray-500 uppercase tracking-wider">Total Price</span>
                                             <div className="text-lg font-bold text-emerald-900">฿{booking.totalPrice.toLocaleString()}</div>
                                         </div>
-                                        <Link
-                                            href={`/villas/${booking.villaId}`}
-                                            className="text-emerald-600 font-medium hover:text-emerald-700 text-sm"
-                                        >
-                                            View Villa
-                                        </Link>
+                                        <div className="flex gap-4">
+                                            <Link
+                                                href={`/bookings/${booking.id}`}
+                                                className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
+                                            >
+                                                View Detail
+                                            </Link>
+                                            <Link
+                                                href={`/villas/${booking.villaId}`}
+                                                className="text-emerald-600 font-medium hover:text-emerald-700 text-sm flex items-center"
+                                            >
+                                                View Villa
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
