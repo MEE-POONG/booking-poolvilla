@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
-import { User, Mail, Save, Loader2, Phone, Calendar, LayoutDashboard, Clock, CreditCard, QrCode, Building2, Upload, X } from "lucide-react";
+import { User, Mail, Save, Loader2, Phone, Calendar, LayoutDashboard, Clock, CreditCard, QrCode, Building2, Upload, X, Shield } from "lucide-react";
 import clsx from "clsx";
 
 interface Booking {
@@ -156,6 +156,17 @@ export default function Profile() {
                                         {link.name}
                                     </button>
                                 ))}
+                                {user?.role === "admin" && (
+                                    <div className="mt-4 pt-4 border-t border-gray-100 px-2 pb-2">
+                                        <Link
+                                            href="/admin"
+                                            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                                        >
+                                            <Shield size={18} />
+                                            Admin Dashboard
+                                        </Link>
+                                    </div>
+                                )}
                             </nav>
                         </div>
                     </div>

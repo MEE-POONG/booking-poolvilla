@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useRouter } from "next/router";
 
 interface User {
@@ -6,40 +6,44 @@ interface User {
     name: string;
     email: string;
     phone?: string;
+    role?: "admin" | "customer";
 }
 
 interface AuthContextType {
     user: User | null;
-    login: (email: string, name: string) => void;
+    login: (email: string, name: string, role?: "admin" | "customer") => void;
     register: (email: string, name: string) => void;
     logout: () => void;
     updateProfile: (name: string, email: string, phone: string) => void;
     isAuthenticated: boolean;
+    loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<User | null>(() => {
-        // Initialize from localStorage
-        if (typeof window !== 'undefined') {
-            const storedUser = localStorage.getItem("user");
-            return storedUser ? JSON.parse(storedUser) : null;
-        }
-        return null;
-    });
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    const login = (email: string, name: string) => {
-        // Mock login logic
-        const newUser = { id: "1", name, email };
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+                setUser(JSON.parse(storedUser));
+            }
+        }
+        setLoading(false);
+    }, []);
+
+    const login = (email: string, name: string, role: "admin" | "customer" = "customer") => {
+        const newUser: User = { id: Date.now().toString(), name, email, role };
         setUser(newUser);
         localStorage.setItem("user", JSON.stringify(newUser));
-        router.push("/");
+        router.push(role === "admin" ? "/admin" : "/");
     };
 
     const register = (email: string, name: string) => {
-        // Mock register logic (same as login for now)
         login(email, name);
     };
 
@@ -66,6 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 logout,
                 updateProfile,
                 isAuthenticated: !!user,
+                loading,
             }}
         >
             {children}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Calendar, User, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
+import { Menu, X, Calendar, User, LogOut, ChevronDown, LayoutDashboard, Shield } from "lucide-react";
 import clsx from "clsx";
 import { useAuth } from "@/context/AuthContext";
 
@@ -99,9 +99,19 @@ export default function Navbar() {
                                             className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-600"
                                             onClick={() => setIsDropdownOpen(false)}
                                         >
-                                            <LayoutDashboard size={16} />
+                                            <User size={16} />
                                             My Profile
                                         </Link>
+                                        {user?.role === "admin" && (
+                                            <Link
+                                                href="/admin"
+                                                className="flex items-center gap-2 px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 font-medium"
+                                                onClick={() => setIsDropdownOpen(false)}
+                                            >
+                                                <Shield size={16} />
+                                                Admin Dashboard
+                                            </Link>
+                                        )}
                                         <Link
                                             href="/profile?tab=bookings"
                                             className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-600"

@@ -20,8 +20,12 @@ export default function LoginPage() {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Mock User Validation
-        if (identifier === "testUse@mail.com" && password === "123456") {
-            login(identifier, "Test User");
+        if (identifier === "admin@poolvilla.com" && password === "admin123") {
+            login(identifier, "Admin User", "admin");
+        } else if (identifier === "0616625565" && password === "526242") {
+            login(identifier, "Demo User", "customer");
+        } else if (identifier === "testUse@mail.com" && password === "123456") {
+            login(identifier, "Test User", "customer");
         } else {
             setError("Invalid username or password");
             setIsLoading(false);
@@ -129,10 +133,20 @@ export default function LoginPage() {
                     </div>
 
                     {/* Mock Credentials Hint */}
-                    <div className="mt-6 p-4 bg-gray-50 rounded-lg text-xs text-gray-500 text-center">
-                        <p className="font-semibold mb-1">Demo Credentials:</p>
-                        <p>Username: 0616625565</p>
-                        <p>Password: 526242</p>
+                    <div className="mt-6 p-4 bg-gray-50 rounded-lg text-xs text-gray-500">
+                        <p className="font-semibold mb-2 text-center text-gray-700">Demo Credentials:</p>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <p className="font-medium text-emerald-700 mb-1">Admin Access:</p>
+                                <p>Email: admin@poolvilla.com</p>
+                                <p>Pass: admin123</p>
+                            </div>
+                            <div>
+                                <p className="font-medium text-emerald-700 mb-1">User Access:</p>
+                                <p>Phone: 0616625565</p>
+                                <p>Pass: 526242</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
