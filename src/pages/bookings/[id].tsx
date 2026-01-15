@@ -74,7 +74,21 @@ export default function BookingDetail() {
         }
 
         setIsLoading(false);
-    }, [id]);
+    }, [id, isAuthenticated, router]);
+
+    const handleCancel = () => {
+        if (!booking || !window.confirm(t('booking_detail.cancel_confirm'))) return;
+
+        // Update localStorage
+        const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+        const updatedBookings = storedBookings.map((b: Booking) =>
+            b.id === booking.id ? { ...b, status: 'Cancelled' } : b
+        );
+        localStorage.setItem("bookings", JSON.stringify(updatedBookings));
+
+        // Update local state
+        setBooking({ ...booking, status: 'Cancelled' });
+    };
 
     const getStatusStyles = (status: string) => {
         switch (status) {
@@ -106,16 +120,16 @@ export default function BookingDetail() {
                     <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-400">
                         <Receipt size={40} />
                     </div>
-                    <h1 className="text-3xl font-serif font-bold text-gray-900 mb-4">Booking Not Found</h1>
+                    <h1 className="text-3xl font-serif font-bold text-gray-900 mb-4">{t('booking_detail.not_found')}</h1>
                     <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                        We couldn&apos;t find the booking details you&apos;re looking for. It might have been deleted or the ID is incorrect.
+                        {t('booking_detail.not_found_desc')}
                     </p>
                     <Link
                         href="/bookings"
                         className="inline-flex items-center gap-2 bg-emerald-600 text-white px-8 py-3 rounded-full font-medium hover:bg-emerald-700 transition-colors"
                     >
                         <ChevronLeft size={20} />
-                        Back to My Bookings
+                        {t('booking_detail.back_to_bookings')}
                     </Link>
                 </div>
             </Layout>
@@ -138,7 +152,7 @@ export default function BookingDetail() {
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                         <div>
                             <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-                                Booking #{booking.id}
+                                {t('booking_detail.title')} #{booking.id}
                             </h1>
                             <div className="flex flex-wrap items-center gap-3">
                                 <span className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-bold border ${statusStyle.bg} ${statusStyle.text} border-current/20`}>
@@ -151,9 +165,18 @@ export default function BookingDetail() {
                             </div>
                         </div>
                         <div className="flex gap-3">
+                            {booking.status === 'Pending' && (
+                                <button
+                                    onClick={handleCancel}
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl border border-red-100 transition-all text-sm font-bold"
+                                >
+                                    <XCircle size={18} />
+                                    {t('booking_detail.cancel_booking')}
+                                </button>
+                            )}
                             <button className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl border border-white/20 transition-all text-sm font-medium backdrop-blur-sm">
                                 <Printer size={18} />
-                                Print Confirmation
+                                {t('booking_detail.print_conf')}
                             </button>
                         </div>
                     </div>
@@ -168,7 +191,7 @@ export default function BookingDetail() {
                         <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 overflow-hidden relative">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -mr-8 -mt-8 opacity-50"></div>
 
-                            <h2 className="text-2xl font-serif font-bold text-gray-900 mb-8 border-b border-gray-100 pb-4">Stay Summary</h2>
+                            <h2 className="text-2xl font-serif font-bold text-gray-900 mb-8 border-b border-gray-100 pb-4">{t('booking_detail.stay_summary')}</h2>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-6">
@@ -179,7 +202,7 @@ export default function BookingDetail() {
                                         <div>
                                             <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">{t('profile.check_in')}</p>
                                             <p className="text-lg font-bold text-gray-900">{booking.checkIn}</p>
-                                            <p className="text-sm text-gray-500">From 14:00 PM</p>
+                                            <p className="text-sm text-gray-500">{t('booking_detail.from_time')}</p>
                                         </div>
                                     </div>
 
@@ -190,7 +213,7 @@ export default function BookingDetail() {
                                         <div>
                                             <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">{t('villa.guests')}</p>
                                             <p className="text-lg font-bold text-gray-900">{booking.guests} {t('villa.guests')}</p>
-                                            <p className="text-sm text-gray-500">Adults & Children</p>
+                                            <p className="text-sm text-gray-500">{t('booking_detail.guests_desc')}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -203,7 +226,7 @@ export default function BookingDetail() {
                                         <div>
                                             <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">{t('profile.check_out')}</p>
                                             <p className="text-lg font-bold text-gray-900">{booking.checkOut}</p>
-                                            <p className="text-sm text-gray-500">Until 12:00 PM</p>
+                                            <p className="text-sm text-gray-500">{t('booking_detail.until_time')}</p>
                                         </div>
                                     </div>
 
@@ -214,7 +237,7 @@ export default function BookingDetail() {
                                         <div>
                                             <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">{t('profile.total_price')}</p>
                                             <p className="text-xl font-black text-emerald-900">฿{booking.totalPrice.toLocaleString()}</p>
-                                            <p className="text-sm text-emerald-600 font-medium">Payment {booking.status === 'Confirmed' ? 'Received' : 'Pending'}</p>
+                                            <p className="text-sm text-emerald-600 font-medium">{booking.status === 'Confirmed' ? t('booking_detail.payment_received') : t('booking_detail.payment_pending')}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -223,7 +246,7 @@ export default function BookingDetail() {
 
                         {/* Villa Info */}
                         <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 overflow-hidden">
-                            <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Villa Details</h2>
+                            <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">{t('booking_detail.villa_details')}</h2>
                             <div className="flex flex-col md:flex-row gap-8">
                                 <div className="relative w-full md:w-64 h-48 md:h-40 rounded-2xl overflow-hidden shrink-0">
                                     <Image
@@ -247,7 +270,7 @@ export default function BookingDetail() {
                                         className="inline-flex items-center gap-2 text-emerald-600 font-bold hover:text-emerald-700 transition-colors"
                                     >
                                         <Home size={18} />
-                                        View Villa Profile
+                                        {t('booking_detail.view_villa')}
                                     </Link>
                                 </div>
                             </div>
@@ -257,40 +280,40 @@ export default function BookingDetail() {
                     {/* Right Column: Actions & Contact */}
                     <div className="space-y-6">
                         <div className="bg-emerald-50 rounded-3xl p-8 border border-emerald-100">
-                            <h3 className="text-lg font-bold text-emerald-900 mb-4">Need Help?</h3>
+                            <h3 className="text-lg font-bold text-emerald-900 mb-4">{t('booking_detail.need_help')}</h3>
                             <p className="text-emerald-800/70 text-sm mb-8 leading-relaxed">
-                                If you have any questions about your booking or need to make changes, our concierge team is available 24/7.
+                                {t('booking_detail.concierge_desc')}
                             </p>
                             <div className="space-y-4">
                                 <a href="tel:+66812345678" className="flex items-center gap-3 bg-white p-4 rounded-2xl border border-emerald-200 text-emerald-900 font-bold hover:shadow-md transition-all">
                                     <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
                                         <Clock size={20} />
                                     </div>
-                                    Call Concierge
+                                    {t('booking_detail.call_concierge')}
                                 </a>
                                 <a href="mailto:support@poolvilla.com" className="flex items-center gap-3 bg-white p-4 rounded-2xl border border-emerald-200 text-emerald-900 font-bold hover:shadow-md transition-all">
                                     <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
                                         <Users size={20} />
                                     </div>
-                                    Email Support
+                                    {t('booking_detail.email_support')}
                                 </a>
                             </div>
                         </div>
 
                         <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">Policies</h3>
+                            <h3 className="text-lg font-bold text-gray-900 mb-4">{t('booking_detail.policies')}</h3>
                             <ul className="space-y-3">
                                 <li className="text-sm text-gray-500 flex items-start gap-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
-                                    Standard Check-in: 14:00 PM
+                                    {t('booking_detail.standard_checkin')}: 14:00 PM
                                 </li>
                                 <li className="text-sm text-gray-500 flex items-start gap-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
-                                    Standard Check-out: 12:00 PM
+                                    {t('booking_detail.standard_checkout')}: 12:00 PM
                                 </li>
                                 <li className="text-sm text-gray-500 flex items-start gap-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
-                                    Cancellation: Free up to 7 days before arrival
+                                    {t('booking_detail.cancellation_policy')}
                                 </li>
                             </ul>
                         </div>

@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/Layout";
 import { useAuth } from "@/context/AuthContext";
-import { Calendar, Clock } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { Calendar, Clock, XCircle, CreditCard, ChevronRight } from "lucide-react";
 
 interface Booking {
     id: string;
@@ -22,15 +23,31 @@ interface Booking {
 
 export default function BookingsPage() {
     const { user, isAuthenticated } = useAuth();
+    const { t } = useLanguage();
     const router = useRouter();
-    const [bookings] = useState<Booking[]>(() => {
+    const [bookings, setBookings] = useState<Booking[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
         if (typeof window !== 'undefined' && user) {
             const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-            return storedBookings.filter((b: Booking) => b.userEmail === user.email);
+            setBookings(storedBookings.filter((b: Booking) => b.userEmail === user.email));
+            setIsLoading(false);
         }
-        return [];
-    });
-    const [isLoading] = useState(false);
+    }, [user]);
+
+    const handleCancel = (bookingId: string) => {
+        if (!window.confirm(t('booking_detail.cancel_confirm'))) return;
+
+        const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+        const updatedBookings = storedBookings.map((b: Booking) =>
+            b.id === bookingId ? { ...b, status: 'Cancelled' } : b
+        );
+        localStorage.setItem("bookings", JSON.stringify(updatedBookings));
+
+        // Update local state
+        setBookings((prev: Booking[]) => prev.map((b: Booking) => b.id === bookingId ? { ...b, status: 'Cancelled' } : b));
+    };
 
     useEffect(() => {
         // Redirect if not logged in
@@ -72,7 +89,7 @@ export default function BookingsPage() {
                     </div>
                 ) : (
                     <div className="space-y-6 max-w-4xl mx-auto">
-                        {bookings.map((booking) => (
+                        {bookings.map((booking: Booking) => (
                             <div key={booking.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row hover:shadow-md transition-shadow">
                                 <div className="relative w-full md:w-64 h-48 md:h-auto shrink-0">
                                     <Image
@@ -110,23 +127,36 @@ export default function BookingsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center">
+                                    <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                         <div>
                                             <span className="text-xs text-gray-500 uppercase tracking-wider">Total Price</span>
                                             <div className="text-lg font-bold text-emerald-900">฿{booking.totalPrice.toLocaleString()}</div>
                                         </div>
-                                        <div className="flex gap-4">
+                                        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                                            {booking.status === 'Pending' && (
+                                                <>
+                                                    <Link
+                                                        href={`/bookings/${booking.id}`}
+                                                        className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-amber-600 transition-colors shadow-sm"
+                                                    >
+                                                        <CreditCard size={14} />
+                                                        {t('profile.pay_now')}
+                                                    </Link>
+                                                    <button
+                                                        onClick={() => handleCancel(booking.id)}
+                                                        className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-white text-red-600 border border-red-100 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-50 transition-colors"
+                                                    >
+                                                        <XCircle size={14} />
+                                                        {t('booking_detail.cancel_booking')}
+                                                    </button>
+                                                </>
+                                            )}
                                             <Link
                                                 href={`/bookings/${booking.id}`}
-                                                className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
+                                                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
                                             >
-                                                View Detail
-                                            </Link>
-                                            <Link
-                                                href={`/villas/${booking.villaId}`}
-                                                className="text-emerald-600 font-medium hover:text-emerald-700 text-sm flex items-center"
-                                            >
-                                                View Villa
+                                                {t('profile.view_detail')}
+                                                <ChevronRight size={14} />
                                             </Link>
                                         </div>
                                     </div>

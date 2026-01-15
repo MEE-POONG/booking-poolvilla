@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
-import { User, Mail, Save, Loader2, Phone, Calendar, LayoutDashboard, Clock, CreditCard, QrCode, Building2, Upload, X, Shield } from "lucide-react";
+import { User, Mail, Save, Loader2, Phone, Calendar, LayoutDashboard, Clock, CreditCard, QrCode, Building2, Upload, X, Shield, ChevronRight } from "lucide-react";
 import clsx from "clsx";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -85,6 +85,19 @@ export default function Profile() {
     const closePaymentModal = () => {
         setIsPaymentModalOpen(false);
         setSelectedBooking(null);
+    };
+
+    const handleCancel = (bookingId: string) => {
+        if (!window.confirm(t('booking_detail.cancel_confirm'))) return;
+
+        const allStoredBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+        const updatedAllBookings = allStoredBookings.map((b: Booking) =>
+            b.id === bookingId ? { ...b, status: 'Cancelled' } : b
+        );
+        localStorage.setItem("bookings", JSON.stringify(updatedAllBookings));
+
+        // Update local state
+        setBookings((prev: Booking[]) => prev.map((b: Booking) => b.id === bookingId ? { ...b, status: 'Cancelled' } : b));
     };
 
     const handlePaymentSubmit = async () => {
@@ -344,21 +357,31 @@ export default function Profile() {
                                                                     <div className="text-lg font-bold text-emerald-900">฿{booking.totalPrice.toLocaleString()}</div>
                                                                 </div>
 
-                                                                <div className="flex items-center gap-3">
+                                                                <div className="flex flex-wrap items-center gap-2">
                                                                     {booking.status === 'Pending' && (
-                                                                        <button
-                                                                            onClick={() => openPaymentModal(booking)}
-                                                                            className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2"
-                                                                        >
-                                                                            <CreditCard size={16} />
-                                                                            {t('profile.pay_now')}
-                                                                        </button>
+                                                                        <>
+                                                                            <button
+                                                                                onClick={() => openPaymentModal(booking)}
+                                                                                className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors flex items-center gap-1.5"
+                                                                            >
+                                                                                <CreditCard size={14} />
+                                                                                {t('profile.pay_now')}
+                                                                            </button>
+                                                                            <button
+                                                                                onClick={() => handleCancel(booking.id)}
+                                                                                className="bg-white text-red-600 border border-red-100 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors flex items-center gap-1.5"
+                                                                            >
+                                                                                <X size={14} />
+                                                                                {t('booking_detail.cancel_booking')}
+                                                                            </button>
+                                                                        </>
                                                                     )}
                                                                     <Link
-                                                                        href={`/villas/${booking.villaId}`}
-                                                                        className="text-emerald-600 font-medium hover:text-emerald-700 text-sm"
+                                                                        href={`/bookings/${booking.id}`}
+                                                                        className="text-emerald-600 font-bold hover:text-emerald-700 text-sm px-2 py-1 flex items-center gap-1"
                                                                     >
-                                                                        {t('profile.view_villa')}
+                                                                        {t('profile.view_detail')}
+                                                                        <ChevronRight size={14} />
                                                                     </Link>
                                                                 </div>
                                                             </div>
